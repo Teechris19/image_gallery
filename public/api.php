@@ -450,11 +450,12 @@ function handle_upload_image() {
     try {
         $pdo = getConnection();
         $stmt = $pdo->prepare("
-            INSERT INTO images (user_id, category_id, artist_name, title, description, filename, original_name, mime_type, size) 
+            INSERT INTO images (user_id, category_id, artist_name, title, description, filename, original_name, mime_type, size)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
+        $user_id = get_logged_in_user_id();
         $stmt->execute([
-            get_logged_in_user_id(),
+            $user_id,
             $category_id ?: null,
             $artist_name,
             $title,
@@ -481,11 +482,16 @@ function handle_upload_image() {
             ]
         ]);
     } catch (PDOException $e) {
-        unlink($target_path);
-        if (file_exists(THUMB_DIR . $filename)) {
-            unlink(THUMB_DIR . $filename);
+        // Clean up files if DB insert fails
+        if (file_exists($target_path)) {
+            unlink($target_path);
         }
-        error_log("Database error: " . $e->getMessage());
-        echo json_encode(['success' => false, 'error' => 'Database error occurred']);
+        $thumb_path = THUMB_DIR . $filename;
+        if (file_exists($thumb_path)) {
+            unlink($thumb_path);
+        }
+        $error_msg = $e->getMessage();
+        error_log("Upload database error: " . $error_msg);
+        echo json_encode(['success' => false, 'error' => 'Database error: ' . $error_msg]);
     }
 }
