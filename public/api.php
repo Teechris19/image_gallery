@@ -1,7 +1,6 @@
 <?php
 /**
  * API Endpoints for AJAX interactions
- * Handles like, rate, follow, search, and category management
  */
 
 define('APP_ROOT', dirname(__DIR__));
@@ -14,6 +13,11 @@ require_once APP_ROOT . '/application/functions/auth.php';
 
 // Initialize database
 initializeDatabase();
+
+// Start session once at the beginning
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Set JSON response header
 header('Content-Type: application/json');
@@ -118,7 +122,6 @@ function handle_register() {
     $result = register_user($username, $email, $password);
 
     if ($result['success']) {
-        // Auto-login after registration
         $user = get_user_by_id($result['user_id']);
         start_user_session($user);
         echo json_encode(['success' => true, 'user' => $user]);
@@ -144,7 +147,6 @@ function handle_get_image_details() {
         return;
     }
 
-    session_start();
     $user_id = get_logged_in_user_id();
     $is_liked = $user_id ? has_liked($image_id, $user_id) : false;
     $user_rating = $user_id ? get_user_rating($image_id, $user_id) : null;
@@ -173,8 +175,6 @@ function handle_get_image_details() {
  * Handle like/unlike action
  */
 function handle_like() {
-    session_start();
-
     if (!is_logged_in()) {
         echo json_encode(['success' => false, 'error' => 'Please login to like images', 'requires_auth' => true]);
         return;
@@ -187,10 +187,14 @@ function handle_like() {
     }
 
     $user_id = get_logged_in_user_id();
+    if (!$user_id) {
+        echo json_encode(['success' => false, 'error' => 'User not logged in', 'requires_auth' => true]);
+        return;
+    }
+
     $result = like_image($image_id, $user_id);
 
     if ($result['success']) {
-        // Get updated like count
         $image = get_image_full($image_id);
         echo json_encode([
             'success' => true,
@@ -207,8 +211,6 @@ function handle_like() {
  * Handle rating action
  */
 function handle_rate() {
-    session_start();
-
     if (!is_logged_in()) {
         echo json_encode(['success' => false, 'error' => 'Please login to rate images', 'requires_auth' => true]);
         return;
@@ -228,10 +230,14 @@ function handle_rate() {
     }
 
     $user_id = get_logged_in_user_id();
+    if (!$user_id) {
+        echo json_encode(['success' => false, 'error' => 'User not logged in', 'requires_auth' => true]);
+        return;
+    }
+
     $result = rate_image($image_id, $user_id, $rating);
 
     if ($result['success']) {
-        // Get updated rating data
         $image = get_image_full($image_id);
         echo json_encode([
             'success' => true,
@@ -248,8 +254,6 @@ function handle_rate() {
  * Handle follow action
  */
 function handle_follow() {
-    session_start();
-
     if (!is_logged_in()) {
         echo json_encode(['success' => false, 'error' => 'Please login to follow artists', 'requires_auth' => true]);
         return;
@@ -262,10 +266,14 @@ function handle_follow() {
     }
 
     $follower_id = get_logged_in_user_id();
+    if (!$follower_id) {
+        echo json_encode(['success' => false, 'error' => 'User not logged in', 'requires_auth' => true]);
+        return;
+    }
+
     $result = follow_user($follower_id, $following_id);
 
     if ($result['success']) {
-        // Get updated follower count
         $stats = get_user_stats($following_id);
         echo json_encode([
             'success' => true,
@@ -281,8 +289,6 @@ function handle_follow() {
  * Handle unfollow action
  */
 function handle_unfollow() {
-    session_start();
-
     if (!is_logged_in()) {
         echo json_encode(['success' => false, 'error' => 'Please login to unfollow artists', 'requires_auth' => true]);
         return;
@@ -295,10 +301,14 @@ function handle_unfollow() {
     }
 
     $follower_id = get_logged_in_user_id();
+    if (!$follower_id) {
+        echo json_encode(['success' => false, 'error' => 'User not logged in', 'requires_auth' => true]);
+        return;
+    }
+
     $result = unfollow_user($follower_id, $following_id);
 
     if ($result['success']) {
-        // Get updated follower count
         $stats = get_user_stats($following_id);
         echo json_encode([
             'success' => true,
@@ -325,7 +335,6 @@ function handle_search() {
 
     $images = get_filtered_images($filters);
 
-    // Format images for response
     $formatted_images = [];
     foreach ($images as $image) {
         $formatted_images[] = [
@@ -350,8 +359,6 @@ function handle_search() {
  * Handle add category action
  */
 function handle_add_category() {
-    session_start();
-
     if (!is_logged_in()) {
         echo json_encode(['success' => false, 'error' => 'Please login to add categories', 'requires_auth' => true]);
         return;
@@ -380,8 +387,6 @@ function handle_add_category() {
  * Handle delete category action
  */
 function handle_delete_category() {
-    session_start();
-
     if (!is_logged_in()) {
         echo json_encode(['success' => false, 'error' => 'Please login to delete categories', 'requires_auth' => true]);
         return;
@@ -406,10 +411,17 @@ function handle_delete_category() {
  * Handle image upload via AJAX
  */
 function handle_upload_image() {
-    session_start();
-
+    // Check authentication first
     if (!is_logged_in()) {
         echo json_encode(['success' => false, 'error' => 'Please login to upload images', 'requires_auth' => true]);
+        return;
+    }
+
+    $user = get_logged_in_user();
+    $user_id = get_logged_in_user_id();
+
+    if (!$user_id || !$user) {
+        echo json_encode(['success' => false, 'error' => 'User not authenticated. Please login again.', 'requires_auth' => true]);
         return;
     }
 
@@ -421,12 +433,26 @@ function handle_upload_image() {
     $title = get_input('title', $_FILES['image']['name']);
     $description = get_input('description', '');
     $category_id = get_input('category_id', null);
-    $artist_name = get_input('artist_name', get_logged_in_user()['username']);
+    $artist_name = get_input('artist_name', $user['username']);
 
     // Validate file
     $validation = validate_upload($_FILES['image']);
     if (!$validation['valid']) {
         echo json_encode(['success' => false, 'error' => $validation['error']]);
+        return;
+    }
+
+    // Ensure upload directories exist
+    if (!is_dir(UPLOAD_DIR)) {
+        mkdir(UPLOAD_DIR, 0755, true);
+    }
+    if (!is_dir(THUMB_DIR)) {
+        mkdir(THUMB_DIR, 0755, true);
+    }
+
+    // Check if directories are writable
+    if (!is_writable(UPLOAD_DIR)) {
+        echo json_encode(['success' => false, 'error' => 'Upload directory is not writable. Please check permissions.']);
         return;
     }
 
@@ -437,14 +463,16 @@ function handle_upload_image() {
 
     // Move uploaded file
     if (!move_uploaded_file($_FILES['image']['tmp_name'], $target_path)) {
-        echo json_encode(['success' => false, 'error' => 'Failed to save uploaded file']);
+        echo json_encode(['success' => false, 'error' => 'Failed to save uploaded file. Check directory permissions.']);
         return;
     }
 
     chmod($target_path, 0644);
 
     // Create thumbnail
-    create_thumbnail($target_path, THUMB_DIR . $filename, THUMB_WIDTH);
+    if (!create_thumbnail($target_path, THUMB_DIR . $filename, THUMB_WIDTH)) {
+        error_log("Failed to create thumbnail for: $filename");
+    }
 
     // Save to database
     try {
@@ -453,7 +481,6 @@ function handle_upload_image() {
             INSERT INTO images (user_id, category_id, artist_name, title, description, filename, original_name, mime_type, size)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $user_id = get_logged_in_user_id();
         $stmt->execute([
             $user_id,
             $category_id ?: null,
