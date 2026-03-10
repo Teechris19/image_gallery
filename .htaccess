@@ -1,0 +1,17 @@
+# Redirect all requests to public folder
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /image-gallery/
+    
+    # Redirect to public folder
+    RewriteCond %{REQUEST_URI} !^/image-gallery/public/
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# If mod_rewrite is not available, use PHP redirect
+<IfModule !mod_rewrite.c>
+    <?php
+    header('Location: public/');
+    exit;
+    ?>
+</IfModule>

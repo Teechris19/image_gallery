@@ -1,0 +1,11 @@
+# Deny access to all files in application directory
+# This protects your PHP code from direct browser access
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>
