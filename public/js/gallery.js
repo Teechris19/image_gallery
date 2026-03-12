@@ -11,15 +11,11 @@ let imageDetails = null;
 
 // Initialize on DOM load
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize search with debounce
+    // Initialize search with instant filtering
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
-        let debounceTimer;
         searchInput.addEventListener('input', function() {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-                performSearch(this.value);
-            }, 500);
+            performInstantSearch(this.value);
         });
     }
 
@@ -66,6 +62,68 @@ function togglePasswordVisibility(inputId) {
 }
 
 /**
+ * Instant search - filters visible images on the page with improved matching
+ */
+function performInstantSearch(query) {
+    const grid = document.querySelector('.masonry-grid');
+    if (!grid) return;
+
+    const items = grid.querySelectorAll('.masonry-item');
+    let visibleCount = 0;
+    const searchTerm = query.toLowerCase().trim();
+
+    // Remove previous empty state if exists
+    const previousEmptyState = document.querySelector('.empty-search-state');
+    if (previousEmptyState) {
+        previousEmptyState.remove();
+    }
+
+    items.forEach(item => {
+        const title = item.querySelector('h3')?.textContent?.toLowerCase() || '';
+        const artistLink = item.querySelector('[onclick*="artist.php"]');
+        const artist = artistLink ? artistLink.textContent.trim().toLowerCase() : '';
+        const category = item.querySelector('.bg-purple-500\\/20')?.textContent?.toLowerCase() || '';
+
+        // Enhanced matching: title, artist, category, or partial matches
+        const matchesTitle = title.includes(searchTerm) || (searchTerm && title.startsWith(searchTerm));
+        const matchesArtist = artist.includes(searchTerm) || (searchTerm && artist.startsWith(searchTerm));
+        const matchesCategory = category.includes(searchTerm) || (searchTerm && category.startsWith(searchTerm));
+
+        if (searchTerm === '' || matchesTitle || matchesArtist || matchesCategory) {
+            item.style.display = 'block';
+            visibleCount++;
+        } else {
+            item.style.display = 'none';
+        }
+    });
+
+    // Update count
+    const countEl = document.getElementById('search-count');
+    if (countEl) {
+        countEl.textContent = visibleCount + (visibleCount === 1 ? ' result' : ' results');
+    }
+
+    // Show/hide empty state
+    if (visibleCount === 0 && items.length > 0) {
+        const emptyState = document.createElement('div');
+        emptyState.className = 'glass-card rounded-3xl p-16 text-center max-w-2xl mx-auto empty-search-state';
+        emptyState.innerHTML = `
+            <div class="w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center animate-float">
+                <svg class="w-16 h-16 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+            <h2 class="text-3xl font-bold text-white mb-4">No results found</h2>
+            <p class="text-slate-400 mb-8">Try adjusting your search term or browse all artworks.</p>
+            <a href="index.php" class="inline-flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-semibold rounded-2xl transition-all duration-300">
+                <span>Clear Search</span>
+            </a>
+        `;
+        grid.parentNode.insertBefore(emptyState, grid);
+    }
+}
+
+/**
  * Update search results count display
  */
 function updateSearchCount() {
@@ -78,7 +136,7 @@ function updateSearchCount() {
 }
 
 /**
- * Perform search via AJAX
+ * Perform search via AJAX (for server-side filtering)
  */
 function performSearch(query) {
     const formData = new FormData();
@@ -111,14 +169,14 @@ function openModal(imageId) {
 
     const modal = document.getElementById('image-modal');
     const modalImage = document.getElementById('modal-image');
-    
+
     // Get data from clicked element
     const clickedItem = event.currentTarget;
     const img = clickedItem.querySelector('img');
     const title = clickedItem.querySelector('h3')?.textContent || '';
     const artistLink = clickedItem.querySelector('[onclick*="artist.php"]');
     const artist = artistLink ? artistLink.textContent.trim() : '';
-    
+
     // Set basic info
     modalImage.src = img.src.replace('thumbs/', '');
     modalImage.alt = title;
@@ -167,10 +225,16 @@ function populateModal(image) {
     document.getElementById('modal-avg-rating').textContent = (image.avg_rating || 0).toFixed(1);
     document.getElementById('modal-rating-count').textContent = image.rating_count || 0;
     document.getElementById('modal-like-count').textContent = image.like_count || 0;
-    
+
+    // Update artist name and link with username
+    const artistName = image.artist_name || 'Unknown';
+    const artistUsername = image.artist_username || artistName;
+    document.getElementById('modal-artist').textContent = artistName;
+    document.getElementById('modal-artist-link').href = 'artist.php?user=' + encodeURIComponent(artistUsername);
+
     currentImageIdForLike = image.id;
     updateLikeButton(image.is_liked, image.like_count);
-    
+
     if (image.user_rating) {
         updateStarDisplay(image.user_rating);
     } else {
@@ -333,7 +397,7 @@ function toggleLike() {
     if (!currentImageIdForLike) return;
 
     const isLoggedIn = document.querySelector('a[href="profile.php"]') !== null;
-    
+
     if (!isLoggedIn) {
         openAuthModal('login');
         return;

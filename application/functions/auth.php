@@ -202,7 +202,7 @@ function update_user_profile($user_id, $data) {
 function get_user_by_id($id) {
     try {
         $pdo = getConnection();
-        $stmt = $pdo->prepare("SELECT id, username, email, avatar, bio, location, portfolio_url, created_at FROM users WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT id, username, avatar, bio, location, portfolio_url, created_at FROM users WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch() ?: null;
     } catch (PDOException $e) {
@@ -219,11 +219,45 @@ function get_user_by_id($id) {
 function get_user_by_username($username) {
     try {
         $pdo = getConnection();
-        $stmt = $pdo->prepare("SELECT id, username, email, avatar, bio, location, portfolio_url, created_at FROM users WHERE username = ?");
+        $stmt = $pdo->prepare("SELECT id, username, avatar, bio, location, portfolio_url, created_at FROM users WHERE username = ?");
         $stmt->execute([$username]);
         return $stmt->fetch() ?: null;
     } catch (PDOException $e) {
         error_log("Get user error: " . $e->getMessage());
+        return null;
+    }
+}
+
+/**
+ * Get public user info by username (excludes email for privacy)
+ * @param string $username
+ * @return array|null
+ */
+function get_public_user_by_username($username) {
+    try {
+        $pdo = getConnection();
+        $stmt = $pdo->prepare("SELECT id, username, avatar, bio, location, portfolio_url, created_at FROM users WHERE username = ?");
+        $stmt->execute([$username]);
+        return $stmt->fetch() ?: null;
+    } catch (PDOException $e) {
+        error_log("Get public user error: " . $e->getMessage());
+        return null;
+    }
+}
+
+/**
+ * Get public user info by ID (excludes email for privacy)
+ * @param int $id
+ * @return array|null
+ */
+function get_public_user_by_id($id) {
+    try {
+        $pdo = getConnection();
+        $stmt = $pdo->prepare("SELECT id, username, avatar, bio, location, portfolio_url, created_at FROM users WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch() ?: null;
+    } catch (PDOException $e) {
+        error_log("Get public user error: " . $e->getMessage());
         return null;
     }
 }

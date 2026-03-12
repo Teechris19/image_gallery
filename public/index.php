@@ -98,10 +98,13 @@ $flashes = get_flash();
             box-shadow: 0 10px 40px rgba(139, 92, 246, 0.15);
             transform: translateY(-4px);
         }
-        /* Masonry Grid */
+        /* Masonry Grid - 4 columns */
         .masonry-grid {
-            column-count: 3;
+            column-count: 4;
             column-gap: 1.5rem;
+        }
+        @media (max-width: 1280px) {
+            .masonry-grid { column-count: 3; }
         }
         @media (max-width: 1024px) {
             .masonry-grid { column-count: 2; }
@@ -365,7 +368,7 @@ $flashes = get_flash();
                             </a>
                             <a href="profile.php" class="flex items-center space-x-2 px-4 py-2 rounded-xl glass hover:bg-slate-800/50 transition-all">
                                 <?php if ($current_user['avatar']): ?>
-                                    <img src="<?= e($current_user['avatar']) ?>" alt="<?= e($current_user['username']) ?>" class="w-8 h-8 rounded-full object-cover">
+                                    <img src="<?= BASE_URL . 'uploads/profiles/' . e($current_user['avatar']) ?>" alt="<?= e($current_user['username']) ?>" class="w-8 h-8 rounded-full object-cover">
                                 <?php else: ?>
                                     <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold text-sm">
                                         <?= strtoupper(substr($current_user['username'], 0, 1)) ?>
@@ -508,7 +511,7 @@ $flashes = get_flash();
             <?php else: ?>
                 <div class="masonry-grid">
                     <?php foreach ($images as $image): ?>
-                        <div class="masonry-item glass-card rounded-2xl overflow-hidden cursor-pointer group" 
+                        <div class="masonry-item glass-card rounded-2xl overflow-hidden cursor-pointer group"
                              onclick="openModal(<?= $image['id'] ?>)">
                             <img src="<?= thumb_url($image['filename']) ?>"
                                  alt="<?= e($image['title']) ?>"
@@ -517,7 +520,7 @@ $flashes = get_flash();
                             <div class="p-4">
                                 <h3 class="text-white font-semibold text-lg truncate"><?= e($image['title']) ?></h3>
                                 <div class="flex items-center justify-between mt-2">
-                                    <a href="artist.php?user=<?= e($image['artist_username']) ?>" 
+                                    <a href="artist.php?user=<?= e($image['artist_username']) ?>"
                                        class="text-slate-400 text-sm hover:text-purple-400 transition-colors flex items-center gap-1"
                                        onclick="event.stopPropagation()">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -782,5 +785,65 @@ $flashes = get_flash();
     </div>
 
     <script src="js/gallery.js"></script>
+    
+    <!-- Auto-reload on changes (when online) -->
+    <script>
+        // Check for changes every 30 seconds using last-modified
+        let lastModified = document.lastModified;
+        let reloadTimeout = null;
+        
+        function checkForChanges() {
+            if (!navigator.onLine) return;
+            
+            fetch(window.location.href, { method: 'HEAD' })
+                .then(response => {
+                    const newModified = response.headers.get('Last-Modified');
+                    if (newModified && newModified !== lastModified) {
+                        // Show reload notification
+                        showReloadNotification();
+                    }
+                })
+                .catch(() => {});
+        }
+        
+        function showReloadNotification() {
+            // Prevent multiple notifications
+            if (document.getElementById('reload-notification')) return;
+            
+            const notification = document.createElement('div');
+            notification.id = 'reload-notification';
+            notification.className = 'fixed bottom-4 right-4 glass rounded-2xl p-4 border border-purple-500/30 shadow-xl z-50 animate-float';
+            notification.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                    <span class="text-white font-medium">Updates available</span>
+                    <button onclick="window.location.reload()" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-sm font-semibold rounded-xl hover:shadow-lg transition-all">
+                        Reload
+                    </button>
+                    <button onclick="this.closest('#reload-notification').remove()" class="text-slate-400 hover:text-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            // Auto-reload after 10 seconds if user doesn't interact
+            reloadTimeout = setTimeout(() => {
+                window.location.reload();
+            }, 10000);
+        }
+        
+        // Check for changes every 30 seconds
+        setInterval(checkForChanges, 30000);
+        
+        // Also check when coming back to tab
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && navigator.onLine) {
+                checkForChanges();
+            }
+        });
+    </script>
 </body>
 </html>

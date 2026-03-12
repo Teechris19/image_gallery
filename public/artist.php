@@ -101,8 +101,11 @@ $is_own_profile = $current_user && $current_user['id'] === $artist['id'];
             transform: translateY(-4px);
         }
         .masonry-grid {
-            column-count: 3;
+            column-count: 4;
             column-gap: 1.5rem;
+        }
+        @media (max-width: 1280px) {
+            .masonry-grid { column-count: 3; }
         }
         @media (max-width: 1024px) {
             .masonry-grid { column-count: 2; }
@@ -177,7 +180,7 @@ $is_own_profile = $current_user && $current_user['id'] === $artist['id'];
                     <!-- Avatar -->
                     <div class="relative">
                         <?php if ($artist['avatar']): ?>
-                            <img src="<?= e($artist['avatar']) ?>" alt="<?= e($artist['username']) ?>" 
+                            <img src="<?= BASE_URL . 'uploads/profiles/' . e($artist['avatar']) ?>" alt="<?= e($artist['username']) ?>"
                                  class="w-32 h-32 rounded-full object-cover border-4 border-purple-500/30 shadow-xl shadow-purple-500/20">
                         <?php else: ?>
                             <div class="w-32 h-32 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 flex items-center justify-center text-white font-bold text-5xl border-4 border-purple-500/30 shadow-xl shadow-purple-500/20">

@@ -74,6 +74,10 @@ switch ($action) {
         handle_upload_image();
         break;
 
+    case 'upload_profile_image':
+        handle_upload_profile_image();
+        break;
+
     case 'get_image_details':
         handle_get_image_details();
         break;
@@ -520,5 +524,80 @@ function handle_upload_image() {
         $error_msg = $e->getMessage();
         error_log("Upload database error: " . $error_msg);
         echo json_encode(['success' => false, 'error' => 'Database error: ' . $error_msg]);
+    }
+}
+
+/**
+ * Handle profile image upload via AJAX
+ */
+function handle_upload_profile_image() {
+    if (!is_logged_in()) {
+        echo json_encode(['success' => false, 'error' => 'Please login to upload profile image', 'requires_auth' => true]);
+        return;
+    }
+
+    $user = get_logged_in_user();
+    $user_id = get_logged_in_user_id();
+
+    if (!isset($_FILES['profile_image']) || $_FILES['profile_image']['error'] === UPLOAD_ERR_NO_FILE) {
+        echo json_encode(['success' => false, 'error' => 'No image selected']);
+        return;
+    }
+
+    // Validate file
+    $validation = validate_upload($_FILES['profile_image']);
+    if (!$validation['valid']) {
+        echo json_encode(['success' => false, 'error' => $validation['error']]);
+        return;
+    }
+
+    // Ensure upload directories exist
+    $profile_dir = UPLOAD_DIR . 'profiles/';
+    if (!is_dir($profile_dir)) {
+        mkdir($profile_dir, 0755, true);
+    }
+
+    // Generate unique filename
+    $extension = pathinfo($_FILES['profile_image']['name'], PATHINFO_EXTENSION);
+    $filename = 'profile_' . $user_id . '_' . time() . '.' . strtolower($extension);
+    $target_path = $profile_dir . $filename;
+
+    // Move uploaded file
+    if (!move_uploaded_file($_FILES['profile_image']['tmp_name'], $target_path)) {
+        echo json_encode(['success' => false, 'error' => 'Failed to save uploaded file']);
+        return;
+    }
+
+    chmod($target_path, 0644);
+
+    // Update user's avatar in database
+    try {
+        $pdo = getConnection();
+        
+        // Delete old profile image if exists
+        if ($user['avatar']) {
+            $old_path = UPLOAD_DIR . 'profiles/' . basename($user['avatar']);
+            if (file_exists($old_path)) {
+                unlink($old_path);
+            }
+        }
+        
+        // Update avatar
+        $stmt = $pdo->prepare("UPDATE users SET avatar = ? WHERE id = ?");
+        $stmt->execute([$filename, $user_id]);
+        
+        // Update session
+        $_SESSION['user']['avatar'] = $filename;
+        
+        echo json_encode([
+            'success' => true,
+            'avatar_url' => BASE_URL . 'uploads/profiles/' . $filename
+        ]);
+    } catch (PDOException $e) {
+        if (file_exists($target_path)) {
+            unlink($target_path);
+        }
+        error_log("Profile upload database error: " . $e->getMessage());
+        echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
     }
 }

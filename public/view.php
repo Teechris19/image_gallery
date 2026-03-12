@@ -182,10 +182,10 @@ $is_artist = $current_user && $current_user['id'] == $image['user_id'];
                         <h2 class="text-2xl font-bold text-white mb-2"><?= e($image['title']) ?></h2>
                         
                         <!-- Artist -->
-                        <a href="artist.php?user=<?= e($image['artist_username']) ?>" 
+                        <a href="artist.php?user=<?= e($image['artist_username']) ?>"
                            class="flex items-center gap-3 mb-6 p-3 rounded-xl glass hover:bg-slate-800/50 transition-all">
                             <?php if ($image['artist_avatar']): ?>
-                                <img src="<?= e($image['artist_avatar']) ?>" alt="<?= e($image['artist_username']) ?>" class="w-12 h-12 rounded-full object-cover">
+                                <img src="<?= BASE_URL . 'uploads/profiles/' . e($image['artist_avatar']) ?>" alt="<?= e($image['artist_username']) ?>" class="w-12 h-12 rounded-full object-cover">
                             <?php else: ?>
                                 <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
                                     <?= strtoupper(substr($image['artist_username'], 0, 1)) ?>
