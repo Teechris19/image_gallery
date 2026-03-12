@@ -1,6 +1,6 @@
 /**
  * Image Gallery JavaScript
- * Handles modal, zoom, rating, likes, search, and authentication
+ * Handles modal, zoom, rating, likes, and authentication
  */
 
 // Modal state
@@ -11,17 +11,6 @@ let imageDetails = null;
 
 // Initialize on DOM load
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize search with instant filtering
-    const searchInput = document.getElementById('search-input');
-    if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            performInstantSearch(this.value);
-        });
-    }
-
-    // Update search count
-    updateSearchCount();
-
     // Close modals on escape key
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
@@ -59,104 +48,6 @@ function togglePasswordVisibility(inputId) {
         input.type = 'password';
         eyeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
     }
-}
-
-/**
- * Instant search - filters visible images on the page with improved matching
- */
-function performInstantSearch(query) {
-    const grid = document.querySelector('.masonry-grid');
-    if (!grid) return;
-
-    const items = grid.querySelectorAll('.masonry-item');
-    let visibleCount = 0;
-    const searchTerm = query.toLowerCase().trim();
-
-    // Remove previous empty state if exists
-    const previousEmptyState = document.querySelector('.empty-search-state');
-    if (previousEmptyState) {
-        previousEmptyState.remove();
-    }
-
-    items.forEach(item => {
-        const title = item.querySelector('h3')?.textContent?.toLowerCase() || '';
-        const artistLink = item.querySelector('[onclick*="artist.php"]');
-        const artist = artistLink ? artistLink.textContent.trim().toLowerCase() : '';
-        const category = item.querySelector('.bg-purple-500\\/20')?.textContent?.toLowerCase() || '';
-
-        // Enhanced matching: title, artist, category, or partial matches
-        const matchesTitle = title.includes(searchTerm) || (searchTerm && title.startsWith(searchTerm));
-        const matchesArtist = artist.includes(searchTerm) || (searchTerm && artist.startsWith(searchTerm));
-        const matchesCategory = category.includes(searchTerm) || (searchTerm && category.startsWith(searchTerm));
-
-        if (searchTerm === '' || matchesTitle || matchesArtist || matchesCategory) {
-            item.style.display = 'block';
-            visibleCount++;
-        } else {
-            item.style.display = 'none';
-        }
-    });
-
-    // Update count
-    const countEl = document.getElementById('search-count');
-    if (countEl) {
-        countEl.textContent = visibleCount + (visibleCount === 1 ? ' result' : ' results');
-    }
-
-    // Show/hide empty state
-    if (visibleCount === 0 && items.length > 0) {
-        const emptyState = document.createElement('div');
-        emptyState.className = 'glass-card rounded-3xl p-16 text-center max-w-2xl mx-auto empty-search-state';
-        emptyState.innerHTML = `
-            <div class="w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center animate-float">
-                <svg class="w-16 h-16 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-            </div>
-            <h2 class="text-3xl font-bold text-white mb-4">No results found</h2>
-            <p class="text-slate-400 mb-8">Try adjusting your search term or browse all artworks.</p>
-            <a href="index.php" class="inline-flex items-center space-x-2 px-8 py-4 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-semibold rounded-2xl transition-all duration-300">
-                <span>Clear Search</span>
-            </a>
-        `;
-        grid.parentNode.insertBefore(emptyState, grid);
-    }
-}
-
-/**
- * Update search results count display
- */
-function updateSearchCount() {
-    const countEl = document.getElementById('search-count');
-    const grid = document.querySelector('.masonry-grid');
-    if (countEl && grid) {
-        const count = grid.querySelectorAll('.masonry-item').length;
-        countEl.textContent = count > 0 ? count + ' artworks' : '';
-    }
-}
-
-/**
- * Perform search via AJAX (for server-side filtering)
- */
-function performSearch(query) {
-    const formData = new FormData();
-    formData.append('action', 'search');
-    formData.append('query', query);
-
-    fetch('api.php', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            const countEl = document.getElementById('search-count');
-            if (countEl) {
-                countEl.textContent = data.count + ' results';
-            }
-        }
-    })
-    .catch(error => console.error('Search error:', error));
 }
 
 /**

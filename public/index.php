@@ -20,7 +20,8 @@ session_start();
 $filters = [
     'category' => get_input('category', ''),
     'search' => get_input('search', ''),
-    'artist' => get_input('artist', '')
+    'artist' => get_input('artist', ''),
+    'sort' => get_input('sort', 'newest')
 ];
 
 $images = get_filtered_images($filters);
@@ -279,6 +280,7 @@ $flashes = get_flash();
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
+            text-decoration: none;
         }
         .category-pill:hover, .category-pill.active {
             background: rgba(139, 92, 246, 0.2);
@@ -286,6 +288,176 @@ $flashes = get_flash();
         }
         .category-pill.active {
             background: rgba(139, 92, 246, 0.3);
+            color: #c4b5fd;
+        }
+        /* Filter Bar */
+        .filter-bar {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .filter-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            font-weight: 600;
+        }
+        .filter-select {
+            padding: 0.625rem 1rem;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 0.75rem;
+            color: white;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 160px;
+        }
+        .filter-select:hover, .filter-select:focus {
+            border-color: rgba(139, 92, 246, 0.5);
+            outline: none;
+        }
+        .filter-search-wrapper {
+            flex: 1;
+            min-width: 200px;
+        }
+        .filter-search {
+            width: 100%;
+            padding: 0.625rem 1rem 0.625rem 2.75rem;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 0.75rem;
+            color: white;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+        .filter-search:focus {
+            outline: none;
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        .filter-search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            pointer-events: none;
+        }
+        .active-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        .active-filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 1rem;
+            font-size: 0.8125rem;
+            color: #c4b5fd;
+        }
+        .active-filter-tag button {
+            background: none;
+            border: none;
+            color: #a78bfa;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s ease;
+        }
+        .active-filter-tag button:hover {
+            color: #f87171;
+        }
+        .active-filter-tag svg {
+            width: 0.875rem;
+            height: 0.875rem;
+        }
+        .apply-btn {
+            padding: 0.625rem 1.5rem;
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+        .apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+        }
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+            padding: 0.75rem 1rem;
+            z-index: 100;
+            display: none;
+        }
+        @media (max-width: 768px) {
+            .bottom-nav {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+            }
+            .main-content {
+                padding-bottom: 5rem;
+            }
+        }
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+            color: #64748b;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            transition: all 0.2s ease;
+        }
+        .bottom-nav-item:hover {
+            color: #a78bfa;
+            background: rgba(139, 92, 246, 0.1);
+        }
+        .bottom-nav-item.active {
+            color: #c4b5fd;
+            background: rgba(139, 92, 246, 0.15);
+        }
+        .bottom-nav-item svg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+        .bottom-nav-item span {
+            font-size: 0.75rem;
+            font-weight: 500;
         }
         /* Auth Modal */
         .auth-modal {
@@ -329,36 +501,33 @@ $flashes = get_flash();
         <!-- Header -->
         <header class="glass sticky top-0 z-50 border-b border-slate-700/50 shadow-lg">
             <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-20">
-                    <div class="flex items-center space-x-4">
-                        <a href="index.php" class="flex items-center space-x-3">
-                            <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 flex items-center justify-center shadow-lg shadow-purple-500/25">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                                </svg>
-                            </div>
-                            <h1 class="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent"><?= e(APP_NAME) ?></h1>
-                        </a>
-                    </div>
+                <div class="flex items-center justify-between h-16 sm:h-20">
+                    <a href="index.php" class="flex items-center space-x-3">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 flex items-center justify-center shadow-lg shadow-purple-500/25">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <h1 class="text-lg sm:text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent hidden sm:block"><?= e(APP_NAME) ?></h1>
+                    </a>
 
-                    <!-- Search Bar -->
-                    <div class="flex-1 max-w-xl mx-8">
+                    <!-- Search Bar in Navbar -->
+                    <div class="flex-1 max-w-xl mx-4 sm:mx-8">
                         <div class="relative">
-                            <input type="text" id="search-input" 
-                                   placeholder="Search artworks, artists..." 
-                                   class="w-full px-5 py-3 pl-12 rounded-2xl bg-slate-800/50 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent transition-all"
+                            <input type="text" id="navbar-search-input"
+                                   placeholder="Search artworks, artists..."
+                                   class="w-full px-4 sm:px-5 py-2.5 sm:py-3 pl-10 sm:pl-12 rounded-xl sm:rounded-2xl bg-slate-800/50 border border-slate-700 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent transition-all text-sm sm:text-base"
                                    value="<?= e($filters['search']) ?>">
-                            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                             </svg>
-                            <span id="search-count" class="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-400"></span>
                         </div>
                     </div>
 
                     <!-- Navigation -->
-                    <nav class="flex items-center space-x-4">
+                    <nav class="flex items-center space-x-2 sm:space-x-4">
                         <?php if ($current_user): ?>
-                            <a href="upload.php" class="group relative px-5 py-2.5 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-semibold rounded-xl overflow-hidden transition-all duration-300 shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/35 hover:scale-105">
+                            <a href="upload.php" class="hidden sm:inline-flex group relative px-4 sm:px-5 py-2.5 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-semibold rounded-xl overflow-hidden transition-all duration-300 shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/35 hover:scale-105">
                                 <span class="relative z-10 flex items-center space-x-2">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
@@ -366,26 +535,26 @@ $flashes = get_flash();
                                     <span>Upload</span>
                                 </span>
                             </a>
-                            <a href="profile.php" class="flex items-center space-x-2 px-4 py-2 rounded-xl glass hover:bg-slate-800/50 transition-all">
+                            <a href="profile.php" class="flex items-center space-x-2 px-3 sm:px-4 py-2 rounded-xl glass hover:bg-slate-800/50 transition-all">
                                 <?php if ($current_user['avatar']): ?>
-                                    <img src="<?= BASE_URL . 'uploads/profiles/' . e($current_user['avatar']) ?>" alt="<?= e($current_user['username']) ?>" class="w-8 h-8 rounded-full object-cover">
+                                    <img src="<?= BASE_URL . 'uploads/profiles/' . e($current_user['avatar']) ?>" alt="<?= e($current_user['username']) ?>" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover">
                                 <?php else: ?>
-                                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold text-sm">
+                                    <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold text-xs sm:text-sm">
                                         <?= strtoupper(substr($current_user['username'], 0, 1)) ?>
                                     </div>
                                 <?php endif; ?>
-                                <span class="font-medium"><?= e($current_user['username']) ?></span>
+                                <span class="font-medium text-sm sm:text-base hidden md:block"><?= e($current_user['username']) ?></span>
                             </a>
-                            <a href="logout.php" class="px-4 py-2 rounded-xl glass text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all">
+                            <a href="logout.php" class="px-3 sm:px-4 py-2 rounded-xl glass text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                                 </svg>
                             </a>
                         <?php else: ?>
-                            <button onclick="openAuthModal('login')" class="px-5 py-2.5 rounded-xl glass text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all font-medium">
+                            <button onclick="openAuthModal('login')" class="px-4 sm:px-5 py-2.5 rounded-xl glass text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all font-medium text-sm sm:text-base">
                                 Login
                             </button>
-                            <button onclick="openAuthModal('signup')" class="px-5 py-2.5 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/35">
+                            <button onclick="openAuthModal('signup')" class="hidden sm:inline-flex px-4 sm:px-5 py-2.5 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/35">
                                 Sign Up
                             </button>
                         <?php endif; ?>
@@ -425,52 +594,97 @@ $flashes = get_flash();
                 </div>
             <?php endforeach; ?>
 
-            <!-- Category Filters -->
-            <div class="mb-8">
-                <div class="flex items-center gap-3 flex-wrap">
-                    <a href="index.php" class="category-pill <?= empty($filters['category']) ? 'active' : '' ?>">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
-                        </svg>
-                        All
-                    </a>
-                    <?php foreach ($categories as $cat): ?>
-                        <a href="index.php?category=<?= e($cat['slug']) ?>" 
-                           class="category-pill <?= $filters['category'] === $cat['slug'] ? 'active' : '' ?>">
-                            <?= e($cat['name']) ?>
-                        </a>
-                    <?php endforeach; ?>
-                    <?php if ($current_user): ?>
-                        <button onclick="openCategoryModal()" class="category-pill">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                            </svg>
-                            Add Category
-                        </button>
+            <!-- Enhanced Filter Bar -->
+            <div class="filter-bar">
+                <form method="GET" action="index.php" id="filter-form">
+                    <div class="filter-row">
+                        <!-- Category Filter -->
+                        <div class="filter-group">
+                            <label class="filter-label" for="category-filter">Category</label>
+                            <select name="category" id="category-filter" class="filter-select">
+                                <option value="">All Categories</option>
+                                <?php foreach ($categories as $cat): ?>
+                                    <option value="<?= e($cat['slug']) ?>" <?= $filters['category'] === $cat['slug'] ? 'selected' : '' ?>><?= e($cat['name']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- Sort Filter -->
+                        <div class="filter-group">
+                            <label class="filter-label" for="sort-filter">Sort By</label>
+                            <select name="sort" id="sort-filter" class="filter-select">
+                                <option value="newest" <?= (!isset($filters['sort']) || $filters['sort'] === 'newest') ? 'selected' : '' ?>>Newest First</option>
+                                <option value="oldest" <?= (isset($filters['sort']) && $filters['sort'] === 'oldest') ? 'selected' : '' ?>>Oldest First</option>
+                                <option value="popular" <?= (isset($filters['sort']) && $filters['sort'] === 'popular') ? 'selected' : '' ?>>Most Popular</option>
+                                <option value="views" <?= (isset($filters['sort']) && $filters['sort'] === 'views') ? 'selected' : '' ?>>Most Viewed</option>
+                            </select>
+                        </div>
+
+                        <!-- Apply Button -->
+                        <div class="filter-group" style="justify-content: flex-end;">
+                            <button type="submit" class="apply-btn">
+                                Apply Filters
+                            </button>
+                        </div>
+
+                        <!-- Clear Filters Button -->
+                        <?php if (!empty($filters['search']) || !empty($filters['category']) || isset($filters['sort'])): ?>
+                            <div class="filter-group" style="justify-content: flex-end;">
+                                <a href="index.php" class="px-4 py-2 rounded-xl bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 hover:text-white text-sm font-medium transition-all flex items-center gap-2" style="margin-top: auto;">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                    Clear
+                                </a>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Active Filters Tags -->
+                    <?php if (!empty($filters['search']) || !empty($filters['category']) || isset($filters['sort'])): ?>
+                        <div class="active-filters">
+                            <span class="filter-label" style="display: flex; align-items: center;">Active:</span>
+                            <?php if (!empty($filters['search'])): ?>
+                                <span class="active-filter-tag">
+                                    Search: "<?= e($filters['search']) ?>"
+                                    <a href="<?= buildFilterUrl(['search' => '']) ?>">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </a>
+                                </span>
+                            <?php endif; ?>
+                            <?php if (!empty($filters['category'])): ?>
+                                <span class="active-filter-tag">
+                                    <?= e(get_category_by_slug($filters['category'])['name'] ?? $filters['category']) ?>
+                                    <a href="<?= buildFilterUrl(['category' => '']) ?>">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </a>
+                                </span>
+                            <?php endif; ?>
+                            <?php if (isset($filters['sort']) && $filters['sort'] !== 'newest'): ?>
+                                <span class="active-filter-tag">
+                                    Sort: <?= ucfirst($filters['sort']) ?>
+                                    <a href="<?= buildFilterUrl(['sort' => '']) ?>">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </a>
+                                </span>
+                            <?php endif; ?>
+                        </div>
                     <?php endif; ?>
-                </div>
+                </form>
             </div>
 
             <!-- Results Count -->
-            <?php if (!empty($filters['search']) || !empty($filters['category']) || !empty($filters['artist'])): ?>
-                <div class="mb-6 flex items-center justify-between">
-                    <p class="text-slate-400">
-                        Showing <span class="text-white font-semibold"><?= count($images) ?></span> results
-                        <?php if (!empty($filters['search'])): ?>
-                            for "<span class="text-white font-semibold"><?= e($filters['search']) ?></span>"
-                        <?php endif; ?>
-                        <?php if (!empty($filters['category'])): ?>
-                            in <span class="text-purple-400 font-semibold"><?= e(get_category_by_slug($filters['category'])['name'] ?? $filters['category']) ?></span>
-                        <?php endif; ?>
-                    </p>
-                    <a href="index.php" class="text-purple-400 hover:text-purple-300 text-sm font-medium flex items-center gap-1">
-                        Clear filters
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </a>
-                </div>
-            <?php endif; ?>
+            <div class="mb-6 flex items-center justify-between">
+                <p class="text-slate-400">
+                    Showing <span class="text-white font-semibold"><?= count($images) ?></span> artworks
+                </p>
+            </div>
 
             <!-- Masonry Grid -->
             <?php if (empty($images)): ?>
@@ -844,6 +1058,50 @@ $flashes = get_flash();
                 checkForChanges();
             }
         });
+        
+        // Navbar search functionality - submit on Enter
+        const navbarSearch = document.getElementById('navbar-search-input');
+        if (navbarSearch) {
+            navbarSearch.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const filterForm = document.getElementById('filter-form');
+                    // Update the search input in the filter form
+                    let filterSearch = filterForm.querySelector('input[name="search"]');
+                    if (!filterSearch) {
+                        // Create hidden input for search
+                        filterSearch = document.createElement('input');
+                        filterSearch.type = 'hidden';
+                        filterSearch.name = 'search';
+                        filterForm.appendChild(filterSearch);
+                    }
+                    filterSearch.value = this.value;
+                    filterForm.submit();
+                }
+            });
+        }
     </script>
+    
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <a href="index.php" class="bottom-nav-item <?= empty($filters) || $filters === ['sort' => 'newest'] ? 'active' : '' ?>">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="javascript:void(0)" class="bottom-nav-item" onclick="document.getElementById('navbar-search-input').focus(); return false;">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <span>Search</span>
+        </a>
+        <a href="<?= $current_user ? 'profile.php' : 'javascript:void(0)' ?>" class="bottom-nav-item <?= strpos($_SERVER['PHP_SELF'], 'profile.php') !== false ? 'active' : '' ?>" onclick="<?= !$current_user ? "openAuthModal('login'); return false;" : '' ?>">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            <span>Me</span>
+        </a>
+    </nav>
 </body>
 </html>

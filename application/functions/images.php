@@ -344,13 +344,13 @@ function delete_category($id) {
 
 /**
  * Get images with filters and search
- * @param array $filters ['category' => int, 'search' => string, 'artist' => string]
+ * @param array $filters ['category' => string, 'search' => string, 'artist' => string, 'sort' => string]
  * @return array Array of images with user and category info
  */
 function get_filtered_images($filters = []) {
     $pdo = getConnection();
 
-    $sql = "SELECT i.*, u.username as artist_username, u.avatar as artist_avatar, 
+    $sql = "SELECT i.*, u.username as artist_username, u.avatar as artist_avatar,
                    c.name as category_name, c.slug as category_slug
             FROM images i
             LEFT JOIN users u ON i.user_id = u.id
@@ -377,7 +377,23 @@ function get_filtered_images($filters = []) {
         $params[] = $search_term;
     }
 
-    $sql .= " ORDER BY i.uploaded_at DESC";
+    // Sorting
+    $sort = $filters['sort'] ?? 'newest';
+    switch ($sort) {
+        case 'oldest':
+            $sql .= " ORDER BY i.uploaded_at ASC";
+            break;
+        case 'popular':
+            $sql .= " ORDER BY (SELECT COUNT(*) FROM likes WHERE image_id = i.id) DESC, i.uploaded_at DESC";
+            break;
+        case 'views':
+            $sql .= " ORDER BY i.views DESC, i.uploaded_at DESC";
+            break;
+        case 'newest':
+        default:
+            $sql .= " ORDER BY i.uploaded_at DESC";
+            break;
+    }
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);

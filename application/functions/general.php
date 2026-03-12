@@ -162,3 +162,23 @@ function show_error($message, $code = 400) {
 </html>";
     exit;
 }
+
+/**
+ * Build filter URL with query parameters
+ * @param array $params Parameters to modify (pass empty string to remove)
+ * @return string URL with query parameters
+ */
+function buildFilterUrl($params = []) {
+    $current = $_GET;
+    
+    foreach ($params as $key => $value) {
+        if ($value === '' || $value === null) {
+            unset($current[$key]);
+        } else {
+            $current[$key] = $value;
+        }
+    }
+    
+    $query = http_build_query($current);
+    return 'index.php' . ($query ? '?' . $query : '');
+}
