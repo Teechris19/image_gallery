@@ -323,11 +323,16 @@ $categories = get_all_categories();
             </svg>
             <span>Home</span>
         </a>
-        <a href="javascript:void(0)" class="bottom-nav-item" onclick="window.location.href='index.php'; return false;">
+        <a href="search.php" class="bottom-nav-item">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
             <span>Search</span>
+        </a>
+        <a href="upload.php" class="bottom-nav-upload">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+            </svg>
         </a>
         <a href="profile.php" class="bottom-nav-item">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -346,15 +351,15 @@ $categories = get_all_categories();
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(20px);
             border-top: 1px solid rgba(148, 163, 184, 0.1);
-            padding: 0.75rem 1rem;
+            padding: 0.5rem 0.5rem;
             z-index: 100;
             display: none;
-            justify-content: space-around;
-            align-items: center;
         }
         @media (max-width: 768px) {
             .bottom-nav {
                 display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
         }
         .bottom-nav-item {
@@ -364,9 +369,10 @@ $categories = get_all_categories();
             gap: 0.25rem;
             color: #64748b;
             text-decoration: none;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem;
             border-radius: 0.75rem;
             transition: all 0.2s ease;
+            flex: 1;
         }
         .bottom-nav-item:hover {
             color: #a78bfa;
@@ -381,8 +387,29 @@ $categories = get_all_categories();
             height: 1.5rem;
         }
         .bottom-nav-item span {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-weight: 500;
+        }
+        .bottom-nav-upload {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 3.5rem;
+            height: 3.5rem;
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+            margin: 0 0.5rem;
+            flex: 0 0 auto;
+        }
+        .bottom-nav-upload svg {
+            width: 1.75rem;
+            height: 1.75rem;
+            color: white;
+        }
+        .bottom-nav-upload:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
         }
     </style>
 </body>

@@ -62,6 +62,10 @@ switch ($action) {
         handle_search();
         break;
 
+    case 'search_suggestions':
+        handle_search_suggestions();
+        break;
+
     case 'add_category':
         handle_add_category();
         break;
@@ -356,6 +360,63 @@ function handle_search() {
         'success' => true,
         'count' => count($formatted_images),
         'images' => $formatted_images
+    ]);
+}
+
+/**
+ * Handle search suggestions
+ */
+function handle_search_suggestions() {
+    $query = get_input('query', '');
+    
+    if (strlen($query) < 2) {
+        echo json_encode(['success' => true, 'suggestions' => []]);
+        return;
+    }
+
+    $pdo = getConnection();
+    $suggestions = [];
+    $searchTerm = '%' . $query . '%';
+
+    // Search for artists
+    $stmt = $pdo->prepare("SELECT id, username FROM users WHERE username LIKE ? LIMIT 5");
+    $stmt->execute([$searchTerm]);
+    $artists = $stmt->fetchAll();
+    foreach ($artists as $artist) {
+        $suggestions[] = [
+            'type' => 'artist',
+            'value' => $artist['username'],
+            'label' => $artist['username']
+        ];
+    }
+
+    // Search for categories
+    $stmt = $pdo->prepare("SELECT id, name, slug FROM categories WHERE name LIKE ? LIMIT 3");
+    $stmt->execute([$searchTerm]);
+    $categories = $stmt->fetchAll();
+    foreach ($categories as $cat) {
+        $suggestions[] = [
+            'type' => 'category',
+            'value' => $cat['slug'],
+            'label' => $cat['name']
+        ];
+    }
+
+    // Search for artworks
+    $stmt = $pdo->prepare("SELECT id, title FROM images WHERE title LIKE ? LIMIT 3");
+    $stmt->execute([$searchTerm]);
+    $artworks = $stmt->fetchAll();
+    foreach ($artworks as $artwork) {
+        $suggestions[] = [
+            'type' => 'artwork',
+            'value' => $artwork['title'],
+            'label' => $artwork['title']
+        ];
+    }
+
+    echo json_encode([
+        'success' => true,
+        'suggestions' => $suggestions
     ]);
 }
 

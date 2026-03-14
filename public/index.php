@@ -107,11 +107,11 @@ $flashes = get_flash();
         @media (max-width: 1280px) {
             .masonry-grid { column-count: 3; }
         }
-        @media (max-width: 1024px) {
-            .masonry-grid { column-count: 2; }
+        @media (max-width: 768px) {
+            .masonry-grid { column-count: 3; }
         }
-        @media (max-width: 640px) {
-            .masonry-grid { column-count: 1; }
+        @media (max-width: 480px) {
+            .masonry-grid { column-count: 2; }
         }
         .masonry-item {
             break-inside: avoid;
@@ -418,14 +418,14 @@ $flashes = get_flash();
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(20px);
             border-top: 1px solid rgba(148, 163, 184, 0.1);
-            padding: 0.75rem 1rem;
+            padding: 0.5rem 0.5rem;
             z-index: 100;
             display: none;
         }
         @media (max-width: 768px) {
             .bottom-nav {
                 display: flex;
-                justify-content: space-around;
+                justify-content: space-between;
                 align-items: center;
             }
             .main-content {
@@ -439,9 +439,10 @@ $flashes = get_flash();
             gap: 0.25rem;
             color: #64748b;
             text-decoration: none;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem;
             border-radius: 0.75rem;
             transition: all 0.2s ease;
+            flex: 1;
         }
         .bottom-nav-item:hover {
             color: #a78bfa;
@@ -456,8 +457,29 @@ $flashes = get_flash();
             height: 1.5rem;
         }
         .bottom-nav-item span {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-weight: 500;
+        }
+        .bottom-nav-upload {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 3.5rem;
+            height: 3.5rem;
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+            margin: 0 0.5rem;
+            flex: 0 0 auto;
+        }
+        .bottom-nav-upload svg {
+            width: 1.75rem;
+            height: 1.75rem;
+            color: white;
+        }
+        .bottom-nav-upload:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
         }
         /* Auth Modal */
         .auth-modal {
@@ -511,8 +533,8 @@ $flashes = get_flash();
                         <h1 class="text-lg sm:text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent hidden sm:block"><?= e(APP_NAME) ?></h1>
                     </a>
 
-                    <!-- Search Bar in Navbar -->
-                    <div class="flex-1 max-w-xl mx-4 sm:mx-8">
+                    <!-- Search Bar in Navbar - Hidden on Mobile -->
+                    <div class="hidden sm:block flex-1 max-w-xl mx-4 sm:mx-8">
                         <div class="relative">
                             <input type="text" id="navbar-search-input"
                                    placeholder="Search artworks, artists..."
@@ -1090,11 +1112,16 @@ $flashes = get_flash();
             </svg>
             <span>Home</span>
         </a>
-        <a href="javascript:void(0)" class="bottom-nav-item" onclick="document.getElementById('navbar-search-input').focus(); return false;">
+        <a href="search.php" class="bottom-nav-item">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
             <span>Search</span>
+        </a>
+        <a href="upload.php" class="bottom-nav-upload">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
+            </svg>
         </a>
         <a href="<?= $current_user ? 'profile.php' : 'javascript:void(0)' ?>" class="bottom-nav-item <?= strpos($_SERVER['PHP_SELF'], 'profile.php') !== false ? 'active' : '' ?>" onclick="<?= !$current_user ? "openAuthModal('login'); return false;" : '' ?>">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
