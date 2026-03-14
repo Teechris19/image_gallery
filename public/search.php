@@ -121,6 +121,30 @@ $current_user = get_logged_in_user();
         .masonry-item:hover img {
             transform: scale(1.05);
         }
+        .masonry-item h3 {
+            font-size: 1.125rem;
+            line-height: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .masonry-item h3 {
+                font-size: 1rem;
+                line-height: 1.4rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .masonry-item h3 {
+                font-size: 0.9375rem;
+                line-height: 1.3rem;
+            }
+        }
+        .masonry-item .text-slate-400 {
+            font-size: 0.875rem;
+        }
+        @media (max-width: 480px) {
+            .masonry-item .text-slate-400 {
+                font-size: 0.8125rem;
+            }
+        }
         /* Filter Bar */
         .filter-bar {
             background: rgba(15, 23, 42, 0.5);
@@ -130,16 +154,43 @@ $current_user = get_logged_in_user();
             margin-bottom: 1.5rem;
             border: 1px solid rgba(148, 163, 184, 0.1);
         }
+        @media (max-width: 768px) {
+            .filter-bar {
+                padding: 1rem;
+                margin-bottom: 1rem;
+                border-radius: 1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .filter-bar {
+                padding: 0.875rem;
+            }
+        }
         .filter-row {
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
             align-items: flex-end;
         }
+        @media (max-width: 768px) {
+            .filter-row {
+                gap: 0.75rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .filter-row {
+                gap: 0.5rem;
+            }
+        }
         .filter-group {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+        }
+        @media (max-width: 480px) {
+            .filter-group {
+                gap: 0.375rem;
+            }
         }
         .filter-label {
             font-size: 0.75rem;
@@ -147,6 +198,11 @@ $current_user = get_logged_in_user();
             letter-spacing: 0.05em;
             color: #64748b;
             font-weight: 600;
+        }
+        @media (max-width: 480px) {
+            .filter-label {
+                font-size: 0.6875rem;
+            }
         }
         .filter-select {
             padding: 0.625rem 1rem;
@@ -159,14 +215,29 @@ $current_user = get_logged_in_user();
             transition: all 0.2s ease;
             min-width: 160px;
         }
-        .filter-select:hover, .filter-select:focus {
-            border-color: rgba(139, 92, 246, 0.5);
-            outline: none;
+        @media (max-width: 768px) {
+            .filter-select {
+                font-size: 0.8125rem;
+                padding: 0.5rem 0.875rem;
+                min-width: 140px;
+            }
+        }
+        @media (max-width: 480px) {
+            .filter-select {
+                font-size: 0.75rem;
+                padding: 0.5rem 0.75rem;
+                min-width: 120px;
+            }
         }
         .filter-search-wrapper {
             flex: 1;
             min-width: 200px;
-            position: relative;
+        }
+        @media (max-width: 768px) {
+            .filter-search-wrapper {
+                min-width: 150px;
+                flex: 1 1 100%;
+            }
         }
         .filter-search {
             width: 100%;
@@ -178,10 +249,17 @@ $current_user = get_logged_in_user();
             font-size: 0.875rem;
             transition: all 0.2s ease;
         }
-        .filter-search:focus {
-            outline: none;
-            border-color: rgba(139, 92, 246, 0.5);
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        @media (max-width: 768px) {
+            .filter-search {
+                font-size: 0.8125rem;
+                padding: 0.5rem 0.875rem 0.5rem 2.5rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .filter-search {
+                font-size: 0.75rem;
+                padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+            }
         }
         .filter-search-icon {
             position: absolute;
@@ -308,7 +386,15 @@ $current_user = get_logged_in_user();
                 align-items: center;
             }
             body {
-                padding-bottom: 5rem;
+                padding-bottom: 5.5rem;
+            }
+            main {
+                padding-bottom: 6rem !important;
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding-bottom: 6rem;
             }
         }
         .bottom-nav-item {
@@ -542,22 +628,6 @@ $current_user = get_logged_in_user();
                     <?php foreach ($images as $image): ?>
                         <div class="masonry-item glass-card rounded-2xl overflow-hidden cursor-pointer group" onclick="window.location.href='view.php?id=<?= $image['id'] ?>'">
                             <img src="<?= thumb_url($image['filename']) ?>" alt="<?= e($image['title']) ?>" loading="lazy" class="hover:scale-105 transition-transform duration-300">
-                            <div class="p-4">
-                                <h3 class="text-white font-semibold text-lg truncate"><?= e($image['title']) ?></h3>
-                                <div class="flex items-center justify-between mt-2">
-                                    <a href="artist.php?user=<?= e($image['artist_username']) ?>" class="text-slate-400 text-sm hover:text-purple-400 transition-colors flex items-center gap-1" onclick="event.stopPropagation()">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                        </svg>
-                                        <?= e($image['artist_name']) ?>
-                                    </a>
-                                    <?php if ($image['category_name']): ?>
-                                        <span class="text-xs px-2 py-1 rounded-full bg-purple-500/20 text-purple-300">
-                                            <?= e($image['category_name']) ?>
-                                        </span>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -583,6 +653,12 @@ $current_user = get_logged_in_user();
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
             </svg>
+        </a>
+        <a href="<?= $current_user ? 'downloads.php' : 'javascript:void(0)' ?>" class="bottom-nav-item" onclick="<?= !$current_user ? "window.location.href='index.php'; return false;" : '' ?>">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <span>Downloads</span>
         </a>
         <a href="<?= $current_user ? 'profile.php' : 'javascript:void(0)' ?>" class="bottom-nav-item" onclick="<?= !$current_user ? "window.location.href='index.php'; return false;" : '' ?>">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -594,3 +594,60 @@ function increment_views($id) {
         error_log("Increment views error: " . $e->getMessage());
     }
 }
+
+/**
+ * Track image download
+ * @param int $image_id
+ * @param int $user_id
+ * @return array ['success' => bool, 'error' => string]
+ */
+function track_download($image_id, $user_id) {
+    try {
+        $pdo = getConnection();
+        $stmt = $pdo->prepare("
+            INSERT INTO downloads (user_id, image_id)
+            VALUES (?, ?)
+            ON DUPLICATE KEY UPDATE downloaded_at = CURRENT_TIMESTAMP
+        ");
+        $stmt->execute([$user_id, $image_id]);
+        return ['success' => true, 'error' => ''];
+    } catch (PDOException $e) {
+        error_log("Track download error: " . $e->getMessage());
+        return ['success' => false, 'error' => 'Failed to track download'];
+    }
+}
+
+/**
+ * Get user's downloaded images
+ * @param int $user_id
+ * @return array
+ */
+function get_user_downloads($user_id) {
+    $pdo = getConnection();
+    $stmt = $pdo->prepare("
+        SELECT i.*, u.username as artist_username, u.avatar as artist_avatar,
+               c.name as category_name, c.slug as category_slug,
+               d.downloaded_at
+        FROM downloads d
+        INNER JOIN images i ON d.image_id = i.id
+        LEFT JOIN users u ON i.user_id = u.id
+        LEFT JOIN categories c ON i.category_id = c.id
+        WHERE d.user_id = ?
+        ORDER BY d.downloaded_at DESC
+    ");
+    $stmt->execute([$user_id]);
+    return $stmt->fetchAll();
+}
+
+/**
+ * Check if user has downloaded an image
+ * @param int $image_id
+ * @param int $user_id
+ * @return bool
+ */
+function has_downloaded($image_id, $user_id) {
+    $pdo = getConnection();
+    $stmt = $pdo->prepare("SELECT id FROM downloads WHERE image_id = ? AND user_id = ?");
+    $stmt->execute([$image_id, $user_id]);
+    return (bool) $stmt->fetch();
+}

@@ -125,6 +125,39 @@ $flashes = get_flash();
         .masonry-item:hover img {
             transform: scale(1.05);
         }
+        /* Card content spacing */
+        .masonry-item .p-4 {
+            padding: 1rem;
+        }
+        @media (max-width: 480px) {
+            .masonry-item .p-4 {
+                padding: 0.75rem;
+            }
+        }
+        .masonry-item h3 {
+            font-size: 1.125rem;
+            line-height: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .masonry-item h3 {
+                font-size: 1rem;
+                line-height: 1.4rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .masonry-item h3 {
+                font-size: 0.9375rem;
+                line-height: 1.3rem;
+            }
+        }
+        .masonry-item .text-slate-400 {
+            font-size: 0.875rem;
+        }
+        @media (max-width: 480px) {
+            .masonry-item .text-slate-400 {
+                font-size: 0.8125rem;
+            }
+        }
         /* Modal Styles */
         .modal {
             display: none;
@@ -154,6 +187,14 @@ $flashes = get_flash();
                 max-height: none;
             }
         }
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 100%;
+                max-height: 100vh;
+                margin: 0;
+                border-radius: 0;
+            }
+        }
         .modal-image-container {
             position: relative;
             display: flex;
@@ -163,12 +204,33 @@ $flashes = get_flash();
             border-radius: 1rem;
             background: rgba(0, 0, 0, 0.3);
         }
+        @media (max-width: 768px) {
+            .modal-image-container {
+                border-radius: 0;
+                max-height: 60vh;
+            }
+        }
+        @media (max-width: 480px) {
+            .modal-image-container {
+                max-height: 50vh;
+            }
+        }
         .modal-image {
             max-width: 100%;
             max-height: 85vh;
             object-fit: contain;
             cursor: zoom-in;
             transition: transform 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .modal-image {
+                max-height: 60vh;
+            }
+        }
+        @media (max-width: 480px) {
+            .modal-image {
+                max-height: 50vh;
+            }
         }
         .modal-image.zoomed {
             cursor: zoom-out;
@@ -184,6 +246,51 @@ $flashes = get_flash();
             overflow-y: auto;
             max-height: 85vh;
             border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        @media (max-width: 1024px) {
+            .modal-sidebar {
+                max-height: none;
+                border-radius: 1.5rem 1.5rem 0 0;
+            }
+        }
+        @media (max-width: 768px) {
+            .modal-sidebar {
+                padding: 1.5rem;
+                gap: 1.25rem;
+                border-radius: 0;
+                max-height: none;
+            }
+        }
+        @media (max-width: 480px) {
+            .modal-sidebar {
+                padding: 1.25rem;
+                gap: 1rem;
+            }
+        }
+        .modal-sidebar h2 {
+            font-size: 1.5rem;
+            line-height: 2rem;
+        }
+        @media (max-width: 768px) {
+            .modal-sidebar h2 {
+                font-size: 1.25rem;
+                line-height: 1.75rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .modal-sidebar h2 {
+                font-size: 1.125rem;
+                line-height: 1.5rem;
+            }
+        }
+        .modal-sidebar p, .modal-sidebar span {
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        @media (max-width: 480px) {
+            .modal-sidebar p, .modal-sidebar span {
+                font-size: 0.8125rem;
+            }
         }
         .modal-close {
             position: absolute;
@@ -290,7 +397,54 @@ $flashes = get_flash();
             background: rgba(139, 92, 246, 0.3);
             color: #c4b5fd;
         }
-        /* Filter Bar */
+        /* Header */
+        header.glass {
+            padding: 0 1rem;
+        }
+        @media (max-width: 768px) {
+            header.glass {
+                padding: 0 0.75rem;
+            }
+            header.glass .h-16 {
+                height: 3.5rem;
+            }
+        }
+        header h1 {
+            font-size: 1.25rem;
+            line-height: 1.75rem;
+        }
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1rem;
+                line-height: 1.5rem;
+            }
+        }
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 0.9375rem;
+                line-height: 1.4rem;
+            }
+        }
+        header .font-medium {
+            font-size: 0.875rem;
+        }
+        @media (max-width: 480px) {
+            header .font-medium {
+                font-size: 0.8125rem;
+            }
+        }
+        /* Main content padding */
+        main {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+        @media (max-width: 768px) {
+            main {
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+            }
+        }
+        /* Filter bar spacing */
         .filter-bar {
             background: rgba(15, 23, 42, 0.5);
             backdrop-filter: blur(10px);
@@ -299,16 +453,43 @@ $flashes = get_flash();
             margin-bottom: 1.5rem;
             border: 1px solid rgba(148, 163, 184, 0.1);
         }
+        @media (max-width: 768px) {
+            .filter-bar {
+                padding: 1rem;
+                margin-bottom: 1rem;
+                border-radius: 1rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .filter-bar {
+                padding: 0.875rem;
+            }
+        }
         .filter-row {
             display: flex;
             gap: 1rem;
             flex-wrap: wrap;
             align-items: flex-end;
         }
+        @media (max-width: 768px) {
+            .filter-row {
+                gap: 0.75rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .filter-row {
+                gap: 0.5rem;
+            }
+        }
         .filter-group {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+        }
+        @media (max-width: 480px) {
+            .filter-group {
+                gap: 0.375rem;
+            }
         }
         .filter-label {
             font-size: 0.75rem;
@@ -316,6 +497,11 @@ $flashes = get_flash();
             letter-spacing: 0.05em;
             color: #64748b;
             font-weight: 600;
+        }
+        @media (max-width: 480px) {
+            .filter-label {
+                font-size: 0.6875rem;
+            }
         }
         .filter-select {
             padding: 0.625rem 1rem;
@@ -328,13 +514,29 @@ $flashes = get_flash();
             transition: all 0.2s ease;
             min-width: 160px;
         }
-        .filter-select:hover, .filter-select:focus {
-            border-color: rgba(139, 92, 246, 0.5);
-            outline: none;
+        @media (max-width: 768px) {
+            .filter-select {
+                font-size: 0.8125rem;
+                padding: 0.5rem 0.875rem;
+                min-width: 140px;
+            }
+        }
+        @media (max-width: 480px) {
+            .filter-select {
+                font-size: 0.75rem;
+                padding: 0.5rem 0.75rem;
+                min-width: 120px;
+            }
         }
         .filter-search-wrapper {
             flex: 1;
             min-width: 200px;
+        }
+        @media (max-width: 768px) {
+            .filter-search-wrapper {
+                min-width: 150px;
+                flex: 1 1 100%;
+            }
         }
         .filter-search {
             width: 100%;
@@ -346,10 +548,17 @@ $flashes = get_flash();
             font-size: 0.875rem;
             transition: all 0.2s ease;
         }
-        .filter-search:focus {
-            outline: none;
-            border-color: rgba(139, 92, 246, 0.5);
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        @media (max-width: 768px) {
+            .filter-search {
+                font-size: 0.8125rem;
+                padding: 0.5rem 0.875rem 0.5rem 2.5rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .filter-search {
+                font-size: 0.75rem;
+                padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+            }
         }
         .filter-search-icon {
             position: absolute;
@@ -359,11 +568,92 @@ $flashes = get_flash();
             color: #64748b;
             pointer-events: none;
         }
+        @media (max-width: 480px) {
+            .filter-search-icon {
+                left: 0.625rem;
+                width: 1rem;
+                height: 1rem;
+            }
+        }
+        .filter-select:hover, .filter-select:focus {
+            border-color: rgba(139, 92, 246, 0.5);
+            outline: none;
+        }
+        .filter-search:focus {
+            outline: none;
+            border-color: rgba(139, 92, 246, 0.5);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        /* Active filters tags */
+        .active-filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 1rem;
+            font-size: 0.8125rem;
+            color: #c4b5fd;
+        }
+        @media (max-width: 480px) {
+            .active-filter-tag {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.625rem;
+                gap: 0.25rem;
+            }
+        }
+        /* Apply button */
+        .apply-btn {
+            padding: 0.625rem 1.5rem;
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+        @media (max-width: 768px) {
+            .apply-btn {
+                padding: 0.5rem 1.25rem;
+                font-size: 0.8125rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .apply-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.75rem;
+            }
+        }
+        /* Results count text */
+        .text-slate-400 {
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        @media (max-width: 768px) {
+            .text-slate-400 {
+                font-size: 0.8125rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .text-slate-400 {
+                font-size: 0.75rem;
+            }
+        }
         .active-filters {
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
             margin-top: 1rem;
+        }
+        @media (max-width: 480px) {
+            .active-filters {
+                gap: 0.375rem;
+                margin-top: 0.75rem;
+            }
         }
         .active-filter-tag {
             display: inline-flex;
@@ -428,8 +718,19 @@ $flashes = get_flash();
                 justify-content: space-between;
                 align-items: center;
             }
+            body {
+                padding-bottom: 5.5rem;
+            }
             .main-content {
                 padding-bottom: 5rem;
+            }
+            main {
+                padding-bottom: 6rem !important;
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding-bottom: 6rem;
             }
         }
         .bottom-nav-item {
@@ -459,6 +760,12 @@ $flashes = get_flash();
         .bottom-nav-item span {
             font-size: 0.65rem;
             font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+        @media (max-width: 400px) {
+            .bottom-nav-item span {
+                font-size: 0.6rem;
+            }
         }
         .bottom-nav-upload {
             display: flex;
@@ -753,24 +1060,6 @@ $flashes = get_flash();
                                  alt="<?= e($image['title']) ?>"
                                  loading="lazy"
                                  class="hover:scale-105 transition-transform duration-300">
-                            <div class="p-4">
-                                <h3 class="text-white font-semibold text-lg truncate"><?= e($image['title']) ?></h3>
-                                <div class="flex items-center justify-between mt-2">
-                                    <a href="artist.php?user=<?= e($image['artist_username']) ?>"
-                                       class="text-slate-400 text-sm hover:text-purple-400 transition-colors flex items-center gap-1"
-                                       onclick="event.stopPropagation()">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                        </svg>
-                                        <?= e($image['artist_name']) ?>
-                                    </a>
-                                    <?php if ($image['category_name']): ?>
-                                        <span class="text-xs px-2 py-1 rounded-full bg-purple-500/20 text-purple-300">
-                                            <?= e($image['category_name']) ?>
-                                        </span>
-                                    <?php endif; ?>
-                                </div>
-                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -1122,6 +1411,12 @@ $flashes = get_flash();
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
             </svg>
+        </a>
+        <a href="<?= $current_user ? 'downloads.php' : 'javascript:void(0)' ?>" class="bottom-nav-item <?= strpos($_SERVER['PHP_SELF'], 'downloads.php') !== false ? 'active' : '' ?>" onclick="<?= !$current_user ? "openAuthModal('login'); return false;" : '' ?>">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <span>Downloads</span>
         </a>
         <a href="<?= $current_user ? 'profile.php' : 'javascript:void(0)' ?>" class="bottom-nav-item <?= strpos($_SERVER['PHP_SELF'], 'profile.php') !== false ? 'active' : '' ?>" onclick="<?= !$current_user ? "openAuthModal('login'); return false;" : '' ?>">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">

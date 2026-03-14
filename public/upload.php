@@ -334,6 +334,12 @@ $categories = get_all_categories();
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
             </svg>
         </a>
+        <a href="<?= $current_user ? 'downloads.php' : 'javascript:void(0)' ?>" class="bottom-nav-item" onclick="<?= !$current_user ? "window.location.href='index.php'; return false;" : '' ?>">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <span>Downloads</span>
+        </a>
         <a href="profile.php" class="bottom-nav-item">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -360,6 +366,17 @@ $categories = get_all_categories();
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+            }
+            body {
+                padding-bottom: 5.5rem;
+            }
+            main {
+                padding-bottom: 6rem !important;
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding-bottom: 6rem;
             }
         }
         .bottom-nav-item {

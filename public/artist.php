@@ -107,11 +107,11 @@ $is_own_profile = $current_user && $current_user['id'] === $artist['id'];
         @media (max-width: 1280px) {
             .masonry-grid { column-count: 3; }
         }
-        @media (max-width: 1024px) {
-            .masonry-grid { column-count: 2; }
+        @media (max-width: 768px) {
+            .masonry-grid { column-count: 3; }
         }
-        @media (max-width: 640px) {
-            .masonry-grid { column-count: 1; }
+        @media (max-width: 480px) {
+            .masonry-grid { column-count: 2; }
         }
         .masonry-item {
             break-inside: avoid;
@@ -267,22 +267,11 @@ $is_own_profile = $current_user && $current_user['id'] === $artist['id'];
                 <?php else: ?>
                     <div class="masonry-grid">
                         <?php foreach ($images as $image): ?>
-                            <div class="masonry-item glass-card rounded-2xl overflow-hidden cursor-pointer group" 
+                            <div class="masonry-item glass-card rounded-2xl overflow-hidden cursor-pointer group"
                                  onclick="window.location.href='view.php?id=<?= $image['id'] ?>'">
                                 <img src="<?= thumb_url($image['filename']) ?>"
                                      alt="<?= e($image['title']) ?>"
                                      loading="lazy">
-                                <div class="p-4">
-                                    <h3 class="text-white font-semibold text-lg truncate"><?= e($image['title']) ?></h3>
-                                    <div class="flex items-center justify-between mt-2">
-                                        <?php if ($image['category_name']): ?>
-                                            <span class="text-xs px-2 py-1 rounded-full bg-purple-500/20 text-purple-300">
-                                                <?= e($image['category_name']) ?>
-                                            </span>
-                                        <?php endif; ?>
-                                        <span class="text-slate-400 text-sm"><?= date('M j, Y', strtotime($image['uploaded_at'])) ?></span>
-                                    </div>
-                                </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -348,6 +337,12 @@ $is_own_profile = $current_user && $current_user['id'] === $artist['id'];
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
             </svg>
         </a>
+        <a href="<?= $current_user ? 'downloads.php' : 'javascript:void(0)' ?>" class="bottom-nav-item" onclick="<?= !$current_user ? "window.location.href='index.php'; return false;" : '' ?>">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <span>Downloads</span>
+        </a>
         <a href="<?= $current_user ? 'profile.php' : 'javascript:void(0)' ?>" class="bottom-nav-item" onclick="<?= !$current_user ? "window.location.href='index.php'; return false;" : '' ?>">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -374,6 +369,17 @@ $is_own_profile = $current_user && $current_user['id'] === $artist['id'];
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+            }
+            body {
+                padding-bottom: 5.5rem;
+            }
+            main {
+                padding-bottom: 6rem !important;
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding-bottom: 6rem;
             }
         }
         .bottom-nav-item {

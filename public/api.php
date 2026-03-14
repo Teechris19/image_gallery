@@ -86,6 +86,10 @@ switch ($action) {
         handle_get_image_details();
         break;
 
+    case 'track_download':
+        handle_track_download();
+        break;
+
     default:
         http_response_code(400);
         echo json_encode(['success' => false, 'error' => 'Invalid action']);
@@ -177,6 +181,36 @@ function handle_get_image_details() {
             'user_rating' => $user_rating
         ]
     ]);
+}
+
+/**
+ * Handle download tracking
+ */
+function handle_track_download() {
+    if (!is_logged_in()) {
+        echo json_encode(['success' => false, 'error' => 'Please login to download images', 'requires_auth' => true]);
+        return;
+    }
+
+    $image_id = get_input('image_id');
+    if (!$image_id) {
+        echo json_encode(['success' => false, 'error' => 'Image ID required']);
+        return;
+    }
+
+    $user_id = get_logged_in_user_id();
+    if (!$user_id) {
+        echo json_encode(['success' => false, 'error' => 'User not logged in', 'requires_auth' => true]);
+        return;
+    }
+
+    $result = track_download($image_id, $user_id);
+
+    if ($result['success']) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'error' => $result['error']]);
+    }
 }
 
 /**

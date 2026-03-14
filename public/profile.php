@@ -135,11 +135,11 @@ $categories = get_all_categories();
         @media (max-width: 1280px) {
             .masonry-grid { column-count: 3; }
         }
-        @media (max-width: 1024px) {
-            .masonry-grid { column-count: 2; }
+        @media (max-width: 768px) {
+            .masonry-grid { column-count: 3; }
         }
-        @media (max-width: 640px) {
-            .masonry-grid { column-count: 1; }
+        @media (max-width: 480px) {
+            .masonry-grid { column-count: 2; }
         }
         .masonry-item {
             break-inside: avoid;
@@ -183,9 +183,6 @@ $categories = get_all_categories();
                         <h1 class="text-2xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent"><?= e(APP_NAME) ?></h1>
                     </a>
                     <nav class="flex items-center space-x-4">
-                        <a href="upload.php" class="px-5 py-2.5 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-purple-500/25 hover:shadow-xl hover:shadow-purple-500/35">
-                            Upload
-                        </a>
                         <a href="logout.php" class="px-4 py-2 rounded-xl glass text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all">
                             Logout
                         </a>
@@ -324,22 +321,11 @@ $categories = get_all_categories();
             <?php else: ?>
                 <div class="masonry-grid">
                     <?php foreach ($images as $image): ?>
-                        <div class="masonry-item glass-card rounded-2xl overflow-hidden cursor-pointer group" 
+                        <div class="masonry-item glass-card rounded-2xl overflow-hidden cursor-pointer group"
                              onclick="window.location.href='view.php?id=<?= $image['id'] ?>'">
                             <img src="<?= thumb_url($image['filename']) ?>"
                                  alt="<?= e($image['title']) ?>"
                                  loading="lazy">
-                            <div class="p-4">
-                                <h3 class="text-white font-semibold text-lg truncate"><?= e($image['title']) ?></h3>
-                                <div class="flex items-center justify-between mt-2">
-                                    <?php if ($image['category_name']): ?>
-                                        <span class="text-xs px-2 py-1 rounded-full bg-purple-500/20 text-purple-300">
-                                            <?= e($image['category_name']) ?>
-                                        </span>
-                                    <?php endif; ?>
-                                    <span class="text-slate-400 text-sm"><?= date('M j, Y', strtotime($image['uploaded_at'])) ?></span>
-                                </div>
-                            </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -365,6 +351,12 @@ $categories = get_all_categories();
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
             </svg>
+        </a>
+        <a href="downloads.php" class="bottom-nav-item">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <span>Downloads</span>
         </a>
         <a href="profile.php" class="bottom-nav-item active">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -394,7 +386,15 @@ $categories = get_all_categories();
                 align-items: center;
             }
             body {
-                padding-bottom: 5rem;
+                padding-bottom: 5.5rem;
+            }
+            main {
+                padding-bottom: 6rem !important;
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding-bottom: 6rem;
             }
         }
         .bottom-nav-item {

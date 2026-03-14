@@ -106,6 +106,19 @@ CREATE TABLE IF NOT EXISTS follows (
     INDEX idx_following_id (following_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Downloads table
+CREATE TABLE IF NOT EXISTS downloads (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    image_id INT NOT NULL,
+    downloaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (image_id) REFERENCES images(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_download (user_id, image_id),
+    INDEX idx_user_id (user_id),
+    INDEX idx_downloaded_at (downloaded_at DESC)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Create demo user if not exists (password: password)
 INSERT INTO users (username, email, password, bio, location)
 SELECT 'demo', 'demo@gallery.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Demo user for testing the gallery features.', 'Virtual World'

@@ -282,7 +282,7 @@ $is_artist = $current_user && $current_user['id'] == $image['user_id'];
                             Share
                         </button>
 
-                        <a href="<?= image_url($image['filename']) ?>" download="<?= e($image['original_name']) ?>" 
+                        <a href="javascript:void(0)" onclick="downloadImage(<?= $image['id'] ?>, '<?= image_url($image['filename']) ?>', '<?= e($image['original_name']) ?>')"
                            class="flex items-center justify-center gap-2 w-full py-3 px-4 bg-gradient-to-r from-cyan-600 to-blue-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-cyan-500/25 hover:shadow-xl hover:shadow-cyan-500/35">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
@@ -385,6 +385,38 @@ $is_artist = $current_user && $current_user['id'] == $image['user_id'];
             });
         }
 
+        function downloadImage(imageId, imageUrl, filename) {
+            // Track download in database
+            const formData = new FormData();
+            formData.append('action', 'track_download');
+            formData.append('image_id', imageId);
+
+            fetch('api.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Then initiate download
+                const link = document.createElement('a');
+                link.href = imageUrl;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(error => {
+                console.error('Download tracking error:', error);
+                // Still download even if tracking fails
+                const link = document.createElement('a');
+                link.href = imageUrl;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+
         function openAuthModal() {
             window.location.href = 'index.php';
         }
@@ -408,6 +440,12 @@ $is_artist = $current_user && $current_user['id'] == $image['user_id'];
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
             </svg>
+        </a>
+        <a href="<?= $current_user ? 'downloads.php' : 'javascript:void(0)' ?>" class="bottom-nav-item" onclick="<?= !$current_user ? "window.location.href='index.php'; return false;" : '' ?>">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <span>Downloads</span>
         </a>
         <a href="<?= $current_user ? 'profile.php' : 'javascript:void(0)' ?>" class="bottom-nav-item" onclick="<?= !$current_user ? "window.location.href='index.php'; return false;" : '' ?>">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -435,6 +473,17 @@ $is_artist = $current_user && $current_user['id'] == $image['user_id'];
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
+            }
+            body {
+                padding-bottom: 5.5rem;
+            }
+            main {
+                padding-bottom: 6rem !important;
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding-bottom: 6rem;
             }
         }
         .bottom-nav-item {
